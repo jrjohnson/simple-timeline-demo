@@ -1,32 +1,23 @@
 export default function() {
+  this.get('/tasks/:id', function(db, request) {
+    let id = request.params.id;
 
-  // These comments are here to help you get started. Feel free to delete them.
+    return {
+      data: {
+        type: 'tasks',
+        id: id,
+        attributes: db.tasks.find(id)
+      }
+    };
+  });
 
-  /*
-    Config (with defaults).
-
-    Note: these only affect routes defined *after* them!
-  */
-  // this.urlPrefix = '';    // make this `http://localhost:8080`, for example, if your API is on a different server
-  // this.namespace = '';    // make this `api`, for example, if your API is namespaced
-  // this.timing = 400;      // delay for each request, automatically set to 0 during testing
-
-  /*
-    Route shorthand cheatsheet
-  */
-  /*
-    GET shorthands
-
-    // Collections
-    this.get('/contacts');
-    this.get('/contacts', 'users');
-    this.get('/contacts', ['contacts', 'addresses']);
-
-    // Single objects
-    this.get('/contacts/:id');
-    this.get('/contacts/:id', 'user');
-    this.get('/contacts/:id', ['contact', 'addresses']);
-  */
+  this.get('/tasks', function(db, request) {
+    return {
+      data: db.tasks.map(attrs => (
+        { type: 'tasks', id: attrs.id, attributes: attrs }
+      ))
+    };
+  });
 
   /*
     POST shorthands

@@ -1,0 +1,16 @@
+<table>
+  <thead>
+    <tr>
+      <th>Task Name</th>
+      <th>Start</th>
+      <th>End</th>
+      <th>Duration</th>
+      <th>Banding</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each tasks as |task|}}
+      {{task-editor task=task}}
+    {{/each}}
+  </tbody>
+</table>

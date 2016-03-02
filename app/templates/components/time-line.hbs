@@ -1,0 +1,5 @@
+<div class='container'>
+  {{#each proxiedTasks as |taskProxy|}}
+    {{timeline-task task=taskProxy.task leftBy=taskProxy.leftBy}}
+  {{/each}}
+</div>

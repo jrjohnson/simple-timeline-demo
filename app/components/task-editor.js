@@ -13,6 +13,8 @@ export default Component.extend({
     this.set('endDate', task.get('endDate'));
     this.set('bandHexValue', task.get('bandHexValue'));
   },
+  isSaving: false,
+  isRemoving: false,
   name: null,
   startDate: null,
   endDate: null,
@@ -23,7 +25,10 @@ export default Component.extend({
     return endDate.diff(startDate, 'days');
   }),
   hexValueOptions: ['#000000', '#BB0000', '#00BB00', '#0000BB'],
-  showSaveButton: computed('name', 'startDate', 'endDate', 'bandHexValue', function(){
+  showSaveButton: computed('name', 'startDate', 'endDate', 'bandHexValue', 'isSaving', function(){
+    if (this.get('isSaving')) {
+      return true;
+    }
     let task = this.get('task');
     let keysWithChangeValues = ['name', 'startDate', 'endDate', 'bandHexValue'].filter(key => {
       return this.get(key) !== task.get(key);
@@ -38,6 +43,23 @@ export default Component.extend({
         const endDate = startDate.add(days, 'days').toDate();
         this.set('endDate', endDate);
       }
+    },
+    save(){
+      this.set('isSaving', true);
+      let task = this.get('task');
+      task.set('name', this.get('name'));
+      task.set('startDate', this.get('startDate'));
+      task.set('endDate', this.get('endDate'));
+      task.set('bandHexValue', this.get('bandHexValue'));
+      task.save().then(() => {
+        this.set('isSaving', false);
+      });
+    },
+    remove(){
+      this.set('isRemoving', true);
+      let task = this.get('task');
+      task.deleteRecord();
+      task.save();
     }
   }
 });

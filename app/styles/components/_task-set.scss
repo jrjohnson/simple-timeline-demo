@@ -1,0 +1,35 @@
+.task-set {
+  background-color: $light-grey;
+  border: 1px solid $black;
+  margin: auto;
+  padding: 2em;
+  width: 80%;
+
+  table {
+    border-collapse: separate;
+    border-spacing: .5em;
+
+    th,
+    td {
+      text-align: left;
+    }
+  }
+
+  button {
+    background-color: transparent;
+    border: 0;
+
+    &:hover {
+      background-color: $white;
+    }
+
+    &.save {
+      color: $green;
+    }
+
+    &.remove {
+      color: $red;
+    }
+  }
+
+}

@@ -1,17 +1,27 @@
 <td>
-  <input value={{task.name}} />
+  <input size=50 value={{name}} onkeyup={{action (mut name) value='target.value'}} />
 </td>
 <td>
-  <input value={{task.startDate}} />
+  {{pikaday-input size=10 value=startDate format='MM/DD/YYYY'}}
 </td>
 <td>
-  <input value={{task.endDate}} />
+  {{pikaday-input size=10 value=endDate format='MM/DD/YYYY'}}
 </td>
 <td>
-  <input value={{task.duration}} />
+  <input size=4 value={{durationInDays}} onkeyup={{action 'changeDuration' value='target.value'}} /> days
 </td>
 <td>
-  <select>
-    <option>Placeholder</option>
-  </select>
+  {{#if (gt durationInDays 0)}}
+    <select onchange={{action (mut bandHexValue) value="target.value"}}>
+      {{#each hexValueOptions as |code|}}
+        <option selected={{eq code bandHexValue}} style={{{concat 'color: ' code}}} value={{code}}>{{code}}</option>
+      {{/each}}
+    </select>
+  {{/if}}
+</td>
+<td>
+  {{#if showSaveButton}}
+    <button class='save'>{{fa-icon 'check'}}</button>
+  {{/if}}
+  <button class='remove'>{{fa-icon 'times'}}</button>
 </td>

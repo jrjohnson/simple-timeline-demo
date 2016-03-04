@@ -19,11 +19,6 @@ export default Component.extend({
   startDate: null,
   endDate: null,
   bandHexValue: null,
-  durationInDays: computed('startDate', 'endDate', function(){
-    const startDate = moment(this.get('startDate')),
-          endDate = moment(this.get('endDate'));
-    return endDate.diff(startDate, 'days');
-  }),
   hexValueOptions: ['#000000', '#BB0000', '#00BB00', '#0000BB'],
   showSaveButton: computed('name', 'startDate', 'endDate', 'bandHexValue', 'isSaving', function(){
     if (this.get('isSaving')) {

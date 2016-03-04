@@ -9,10 +9,10 @@
     {{pikaday-input size=10 value=endDate format='MM/DD/YYYY'}}
   </td>
   <td>
-    <input size=4 value={{durationInDays}} onkeyup={{action 'changeDuration' value='target.value'}} /> days
+    <input size=4 value={{task.durationInDays}} onkeyup={{action 'changeDuration' value='target.value'}} /> days
   </td>
   <td>
-    {{#if (gt durationInDays 0)}}
+    {{#if (gt task.durationInDays 0)}}
       <select onchange={{action (mut bandHexValue) value="target.value"}}>
         {{#each hexValueOptions as |code|}}
           <option selected={{eq code bandHexValue}} style={{{concat 'color: ' code}}} value={{code}}>{{code}}</option>

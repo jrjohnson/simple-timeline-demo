@@ -1,5 +1,6 @@
 .time-line {
   margin: 4em auto;
+  overflow: hidden;
   width: 90%;
 
   .container {
@@ -27,5 +28,11 @@
       line-height: 12px;
       position: absolute;
     }
+
+    .band {
+      display: none;
+    }
   }
+
+
 }

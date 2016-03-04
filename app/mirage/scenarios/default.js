@@ -3,7 +3,7 @@ import moment from 'moment';
 export default function(server) {
   let today = moment();
   server.create('task', {
-    name: 'single',
+    name: 'single long event name',
     startDate: today.toDate(),
     endDate: today.toDate(),
   });
@@ -18,11 +18,11 @@ export default function(server) {
     endDate: today.clone().add(8, 'days').toDate(),
   });
 
-  // for (let i = 0; i < 5; i++) {
-  //   server.create('task', {
-  //     name: 'task ' + i,
-  //     startDate: today.clone().add(i, 'days').toDate(),
-  //     endDate: today.clone().add(i, 'days').toDate(),
-  //   });
-  // }
+  for (let i = 0; i < 5; i++) {
+    server.create('task', {
+      name: 'task ' + i,
+      startDate: today.clone().add(i, 'days').toDate(),
+      endDate: today.clone().add(i, 'days').toDate(),
+    });
+  }
 }

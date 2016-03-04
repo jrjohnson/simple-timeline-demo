@@ -16,10 +16,17 @@
     position: absolute;
     text-align: left;
     top: 0;
+    white-space: nowrap;
     width: 50px;
+
+    .label {
+      overflow: hidden;
+    }
 
     .date {
       color: $grey;
+      font-size: .8em;
+      overflow: hidden;
     }
 
     .icon {

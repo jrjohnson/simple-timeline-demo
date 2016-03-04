@@ -1,5 +1,5 @@
 <div class='container'>
   {{#each proxiedTasks as |taskProxy|}}
-    {{timeline-task task=taskProxy.task leftBy=taskProxy.leftBy dayWidth=widthOfADay}}
+    {{timeline-task task=taskProxy.task leftBy=taskProxy.leftBy dayWidth=widthOfADay showLabel=taskProxy.showLabel}}
   {{/each}}
 </div>

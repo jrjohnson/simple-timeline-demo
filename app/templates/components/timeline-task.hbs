@@ -1,6 +1,8 @@
 <div class='task'>
-  <div class='label'>{{task.name}}</div>
-  <div class='date'>{{moment-format task.startDate 'MM/DD/YYYY'}}</div>
+  {{#if showLabel}}
+    <div class='label'>{{task.name}}</div>
+    <div class='date'>{{moment-format task.startDate 'MM/DD/YYYY'}}</div>
+  {{/if}}
   <div class='icon'>&diams;</div>
   <div class='band' style={{{bandStyle}}}>&nbsp;</div>
 </div>

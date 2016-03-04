@@ -31,9 +31,23 @@ export default Component.extend(ResizeAware, {
 
     return width / daysOfCoverage;
   }),
+  topTasks: computed('tasks.@each.startDate', function(){
+    let topTasks = [];
+    let dates = [];
+    this.get('tasks').forEach(task => {
+      let date = moment(task.get('startDate')).format('MMDDYYYY');
+      if (!dates.contains(date)) {
+        topTasks.pushObject(task.get('id'));
+        dates.pushObject(date);
+      }
+    });
+
+    return topTasks;
+  }),
   proxiedTasks: computed('startDate', 'endDate', 'tasks.@each.startDate', function(){
     const startDate = moment(this.get('startDate'), 'MMDDYYYY'),
-          endDate = moment(this.get('endDate'), 'MMDDYYYY');
+          endDate = moment(this.get('endDate'), 'MMDDYYYY'),
+          topTasks = this.get('topTasks');
 
     return this.get('tasks').filter(task => {
       let taskStartDate = moment(task.get('startDate'));
@@ -42,11 +56,8 @@ export default Component.extend(ResizeAware, {
     }).map(task => {
       let taskStartDate = moment(task.get('startDate'));
       let leftBy = taskStartDate.diff(startDate, 'days');
-
-      return {task, leftBy};
+      let showLabel = topTasks.contains(task.get('id'))
+      return {task, leftBy, showLabel};
     });
-  }),
-  didResize(width, height, evt) {
-    this.set('width', this.$().innerWidth());
-  }
+  })
 });

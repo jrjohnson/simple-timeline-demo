@@ -18,10 +18,5 @@ export default Component.extend({
       'min': 0,
       'max': this.get('steps')
     };
-  }),
-  pips: {
-		mode: 'steps',
-    steped: true,
-		density: 10
-	}
+  })
 });

@@ -8,12 +8,16 @@ export default Component.extend({
   tasks: [],
   startDate: null,
   endDate: null,
-  proxiedTasks: computed('tasks.@each.startDate', function(){
-    const startDate = moment(this.get('startDate')),
-          endDate = moment(this.get('endDate'));
+  proxiedTasks: computed('startDate', 'endDate', 'tasks.@each.startDate', function(){
+    const startDate = moment(this.get('startDate'), 'MMDDYYYY'),
+          endDate = moment(this.get('endDate'), 'MMDDYYYY');
     const daysOfCoverage = endDate.diff(startDate, 'days');
 
-    return this.get('tasks').map(task => {
+    return this.get('tasks').filter(task => {
+      let taskStartDate = moment(task.get('startDate'));
+
+      return taskStartDate.isSameOrAfter(startDate, 'day') && taskStartDate.isSameOrBefore(endDate, 'day');
+    }).map(task => {
       let taskStartDate = moment(task.get('startDate'));
       let diff = taskStartDate.diff(startDate, 'days');
       let leftBy = diff/daysOfCoverage * 100;

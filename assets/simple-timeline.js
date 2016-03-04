@@ -6,7 +6,7 @@
 
 /* jshint ignore:end */
 
-define('simple-timeline/adapters/application', ['exports', 'ember', 'ember-data'], function (exports, _ember, _emberData) {
+define('simple-timeline/adapters/application', ['exports', 'ember-data'], function (exports, _emberData) {
   var RESTAdapter = _emberData['default'].RESTAdapter;
   exports['default'] = RESTAdapter.extend({});
 });
@@ -88,10 +88,73 @@ define('simple-timeline/components/focus-timeline', ['exports', 'ember'], functi
     })
   });
 });
+define('simple-timeline/components/new-task-editor', ['exports', 'ember', 'moment'], function (exports, _ember, _moment) {
+  var Component = _ember['default'].Component;
+  var computed = _ember['default'].computed;
+  var isPresent = _ember['default'].isPresent;
+  var inject = _ember['default'].inject;
+  var service = inject.service;
+  exports['default'] = Component.extend({
+    store: service(),
+    tagName: 'tr',
+    isSaving: false,
+    name: null,
+    startDate: null,
+    endDate: null,
+    bandHexValue: null,
+    hexValueOptions: ['#000000', '#BB0000', '#00BB00', '#0000BB'],
+    showSaveButton: computed('name', 'startDate', 'endDate', 'isSaving', function () {
+      var _this = this;
+
+      if (this.get('isSaving')) {
+        return true;
+      }
+      var filledRequiredKeys = ['name', 'startDate', 'endDate'].filter(function (key) {
+        return isPresent(_this.get(key));
+      });
+
+      return filledRequiredKeys.length === 3;
+    }),
+    durationInDays: computed('startDate', 'endDate', function () {
+      var startDate = (0, _moment['default'])(this.get('startDate')),
+          endDate = (0, _moment['default'])(this.get('endDate'));
+
+      var diff = endDate.diff(startDate, 'days');
+
+      return isNaN(diff) ? 0 : diff;
+    }),
+    actions: {
+      changeDuration: function changeDuration(days) {
+        if (isPresent(days)) {
+          var startDate = (0, _moment['default'])(this.get('startDate'));
+          var endDate = startDate.add(days, 'days').toDate();
+          this.set('endDate', endDate);
+        }
+      },
+      save: function save() {
+        var _this2 = this;
+
+        this.set('isSaving', true);
+        var task = this.get('store').createRecord('task');
+        task.set('name', this.get('name'));
+        task.set('startDate', this.get('startDate'));
+        task.set('endDate', this.get('endDate'));
+        task.set('bandHexValue', this.get('bandHexValue'));
+        this.set('name', null);
+        this.set('startDate', null);
+        this.set('endDate', null);
+        this.set('bandHexValue', null);
+        task.save().then(function () {
+          _this2.set('isSaving', false);
+        });
+      }
+    }
+  });
+});
 define('simple-timeline/components/pikaday-input', ['exports', 'ember', 'ember-pikaday/components/pikaday-input'], function (exports, _ember, _emberPikadayComponentsPikadayInput) {
   exports['default'] = _emberPikadayComponentsPikadayInput['default'];
 });
-define('simple-timeline/components/range-slider', ['exports', 'ember', 'ember-cli-nouislider/components/range-slider'], function (exports, _ember, _emberCliNouisliderComponentsRangeSlider) {
+define('simple-timeline/components/range-slider', ['exports', 'ember-cli-nouislider/components/range-slider'], function (exports, _emberCliNouisliderComponentsRangeSlider) {
   exports['default'] = _emberCliNouisliderComponentsRangeSlider['default'].extend({});
 });
 define('simple-timeline/components/task-editor', ['exports', 'ember', 'moment'], function (exports, _ember, _moment) {
@@ -752,6 +815,7 @@ define('simple-timeline/mirage/config', ['exports'], function (exports) {
     this.get('/tasks/:id', 'task');
     this.get('/tasks', 'tasks');
     this.put('/tasks/:id');
+    this.post('/tasks/');
     this.del('/tasks/:id');
   };
 });
@@ -805,9 +869,8 @@ define('simple-timeline/mixins/resize-aware', ['exports', 'ember-resize/mixins/r
     }
   });
 });
-define('simple-timeline/models/task', ['exports', 'ember-data/model', 'ember-data/attr', 'moment'], function (exports, _emberDataModel, _emberDataAttr, _moment) {
-  var _Ember = Ember;
-  var computed = _Ember.computed;
+define('simple-timeline/models/task', ['exports', 'ember', 'ember-data/model', 'ember-data/attr', 'moment'], function (exports, _ember, _emberDataModel, _emberDataAttr, _moment) {
+  var computed = _ember['default'].computed;
   exports['default'] = _emberDataModel['default'].extend({
     name: (0, _emberDataAttr['default'])('string'),
     startDate: (0, _emberDataAttr['default'])('date'),
@@ -968,6 +1031,348 @@ define("simple-timeline/templates/components/focus-timeline", ["exports"], funct
       statements: [["inline", "range-slider", [], ["start", ["subexpr", "@mut", [["get", "start", ["loc", [null, [2, 8], [2, 13]]]]], [], []], "step", 1, "margin", 1, "range", ["subexpr", "@mut", [["get", "range", ["loc", [null, [5, 8], [5, 13]]]]], [], []], "connect", true, "change", ["subexpr", "@mut", [["get", "this.attrs.changeFocus", ["loc", [null, [7, 9], [7, 31]]]]], [], []]], ["loc", [null, [1, 0], [8, 2]]]]],
       locals: [],
       templates: []
+    };
+  })());
+});
+define("simple-timeline/templates/components/new-task-editor", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            "fragmentReason": false,
+            "revision": "Ember@2.3.1",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 16,
+                "column": 6
+              },
+              "end": {
+                "line": 18,
+                "column": 6
+              }
+            },
+            "moduleName": "simple-timeline/templates/components/new-task-editor.hbs"
+          },
+          isEmpty: false,
+          arity: 1,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("        ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("option");
+            var el2 = dom.createComment("");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var element1 = dom.childAt(fragment, [1]);
+            var morphs = new Array(4);
+            morphs[0] = dom.createAttrMorph(element1, 'selected');
+            morphs[1] = dom.createUnsafeAttrMorph(element1, 'style');
+            morphs[2] = dom.createAttrMorph(element1, 'value');
+            morphs[3] = dom.createMorphAt(element1, 0, 0);
+            return morphs;
+          },
+          statements: [["attribute", "selected", ["subexpr", "eq", [["get", "code", ["loc", [null, [17, 30], [17, 34]]]], ["get", "bandHexValue", ["loc", [null, [17, 35], [17, 47]]]]], [], ["loc", [null, [17, 25], [17, 49]]]]], ["attribute", "style", ["subexpr", "concat", ["color: ", ["get", "code", ["loc", [null, [17, 76], [17, 80]]]]], [], ["loc", [null, [17, 56], [17, 83]]]]], ["attribute", "value", ["get", "code", ["loc", [null, [17, 92], [17, 96]]]]], ["content", "code", ["loc", [null, [17, 99], [17, 107]]]]],
+          locals: ["code"],
+          templates: []
+        };
+      })();
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.3.1",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 14,
+              "column": 2
+            },
+            "end": {
+              "line": 20,
+              "column": 2
+            }
+          },
+          "moduleName": "simple-timeline/templates/components/new-task-editor.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("    ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("select");
+          var el2 = dom.createTextNode("\n");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createComment("");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("    ");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var element2 = dom.childAt(fragment, [1]);
+          var morphs = new Array(2);
+          morphs[0] = dom.createAttrMorph(element2, 'onchange');
+          morphs[1] = dom.createMorphAt(element2, 1, 1);
+          return morphs;
+        },
+        statements: [["attribute", "onchange", ["subexpr", "action", [["subexpr", "mut", [["get", "bandHexValue", ["loc", [null, [15, 35], [15, 47]]]]], [], ["loc", [null, [15, 30], [15, 48]]]]], ["value", "target.value"], ["loc", [null, [15, 21], [15, 71]]]]], ["block", "each", [["get", "hexValueOptions", ["loc", [null, [16, 14], [16, 29]]]]], [], 0, null, ["loc", [null, [16, 6], [18, 15]]]]],
+        locals: [],
+        templates: [child0]
+      };
+    })();
+    var child1 = (function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            "fragmentReason": false,
+            "revision": "Ember@2.3.1",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 25,
+                "column": 6
+              },
+              "end": {
+                "line": 27,
+                "column": 6
+              }
+            },
+            "moduleName": "simple-timeline/templates/components/new-task-editor.hbs"
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("        ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment("");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            return morphs;
+          },
+          statements: [["inline", "fa-icon", ["spinner"], ["spin", true], ["loc", [null, [26, 8], [26, 39]]]]],
+          locals: [],
+          templates: []
+        };
+      })();
+      var child1 = (function () {
+        return {
+          meta: {
+            "fragmentReason": false,
+            "revision": "Ember@2.3.1",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 27,
+                "column": 6
+              },
+              "end": {
+                "line": 29,
+                "column": 6
+              }
+            },
+            "moduleName": "simple-timeline/templates/components/new-task-editor.hbs"
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("        ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment("");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            return morphs;
+          },
+          statements: [["inline", "fa-icon", ["check"], [], ["loc", [null, [28, 8], [28, 27]]]]],
+          locals: [],
+          templates: []
+        };
+      })();
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.3.1",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 23,
+              "column": 2
+            },
+            "end": {
+              "line": 31,
+              "column": 2
+            }
+          },
+          "moduleName": "simple-timeline/templates/components/new-task-editor.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("    ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("button");
+          dom.setAttribute(el1, "class", "save");
+          var el2 = dom.createTextNode("\n");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createComment("");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("    ");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var element0 = dom.childAt(fragment, [1]);
+          var morphs = new Array(3);
+          morphs[0] = dom.createAttrMorph(element0, 'disabled');
+          morphs[1] = dom.createElementMorph(element0);
+          morphs[2] = dom.createMorphAt(element0, 1, 1);
+          return morphs;
+        },
+        statements: [["attribute", "disabled", ["subexpr", "if", [["get", "isSaving", ["loc", [null, [24, 26], [24, 34]]]], true], [], ["loc", [null, [24, 21], [24, 41]]]]], ["element", "action", ["save"], [], ["loc", [null, [24, 42], [24, 59]]]], ["block", "if", [["get", "isSaving", ["loc", [null, [25, 12], [25, 20]]]]], [], 0, 1, ["loc", [null, [25, 6], [29, 13]]]]],
+        locals: [],
+        templates: [child0, child1]
+      };
+    })();
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["multiple-nodes"]
+        },
+        "revision": "Ember@2.3.1",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 33,
+            "column": 0
+          }
+        },
+        "moduleName": "simple-timeline/templates/components/new-task-editor.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("td");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("input");
+        dom.setAttribute(el2, "size", "50");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("td");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("td");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("td");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("input");
+        dom.setAttribute(el2, "size", "4");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode(" days\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("td");
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("td");
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element3 = dom.childAt(fragment, [0, 1]);
+        var element4 = dom.childAt(fragment, [6, 1]);
+        var morphs = new Array(8);
+        morphs[0] = dom.createAttrMorph(element3, 'value');
+        morphs[1] = dom.createAttrMorph(element3, 'onkeyup');
+        morphs[2] = dom.createMorphAt(dom.childAt(fragment, [2]), 1, 1);
+        morphs[3] = dom.createMorphAt(dom.childAt(fragment, [4]), 1, 1);
+        morphs[4] = dom.createAttrMorph(element4, 'value');
+        morphs[5] = dom.createAttrMorph(element4, 'onkeyup');
+        morphs[6] = dom.createMorphAt(dom.childAt(fragment, [8]), 1, 1);
+        morphs[7] = dom.createMorphAt(dom.childAt(fragment, [10]), 1, 1);
+        return morphs;
+      },
+      statements: [["attribute", "value", ["get", "name", ["loc", [null, [2, 25], [2, 29]]]]], ["attribute", "onkeyup", ["subexpr", "action", [["subexpr", "mut", [["get", "name", ["loc", [null, [2, 54], [2, 58]]]]], [], ["loc", [null, [2, 49], [2, 59]]]]], ["value", "target.value"], ["loc", [null, [2, 40], [2, 82]]]]], ["inline", "pikaday-input", [], ["size", 10, "value", ["subexpr", "@mut", [["get", "startDate", ["loc", [null, [5, 32], [5, 41]]]]], [], []], "format", "MM/DD/YYYY"], ["loc", [null, [5, 2], [5, 63]]]], ["inline", "pikaday-input", [], ["size", 10, "value", ["subexpr", "@mut", [["get", "endDate", ["loc", [null, [8, 32], [8, 39]]]]], [], []], "format", "MM/DD/YYYY"], ["loc", [null, [8, 2], [8, 61]]]], ["attribute", "value", ["get", "durationInDays", ["loc", [null, [11, 24], [11, 38]]]]], ["attribute", "onkeyup", ["subexpr", "action", ["changeDuration"], ["value", "target.value"], ["loc", [null, [11, 49], [11, 97]]]]], ["block", "if", [["subexpr", "gt", [["get", "durationInDays", ["loc", [null, [14, 12], [14, 26]]]], 0], [], ["loc", [null, [14, 8], [14, 29]]]]], [], 0, null, ["loc", [null, [14, 2], [20, 9]]]], ["block", "if", [["get", "showSaveButton", ["loc", [null, [23, 8], [23, 22]]]]], [], 1, null, ["loc", [null, [23, 2], [31, 9]]]]],
+      locals: [],
+      templates: [child0, child1]
     };
   })());
 });
@@ -1474,7 +1879,7 @@ define("simple-timeline/templates/components/task-set", ["exports"], function (e
             "column": 0
           },
           "end": {
-            "line": 18,
+            "line": 19,
             "column": 0
           }
         },
@@ -1540,7 +1945,11 @@ define("simple-timeline/templates/components/task-set", ["exports"], function (e
         dom.appendChild(el2, el3);
         var el3 = dom.createComment("");
         dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("  ");
+        var el3 = dom.createTextNode("    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
         var el2 = dom.createTextNode("\n");
@@ -1551,11 +1960,13 @@ define("simple-timeline/templates/components/task-set", ["exports"], function (e
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [0, 3]), 1, 1);
+        var element0 = dom.childAt(fragment, [0, 3]);
+        var morphs = new Array(2);
+        morphs[0] = dom.createMorphAt(element0, 1, 1);
+        morphs[1] = dom.createMorphAt(element0, 3, 3);
         return morphs;
       },
-      statements: [["block", "each", [["get", "tasks", ["loc", [null, [13, 12], [13, 17]]]]], [], 0, null, ["loc", [null, [13, 4], [15, 13]]]]],
+      statements: [["block", "each", [["get", "tasks", ["loc", [null, [13, 12], [13, 17]]]]], [], 0, null, ["loc", [null, [13, 4], [15, 13]]]], ["inline", "new-task-editor", [], ["task", ["subexpr", "@mut", [["get", "task", ["loc", [null, [16, 27], [16, 31]]]]], [], []]], ["loc", [null, [16, 4], [16, 33]]]]],
       locals: [],
       templates: [child0]
     };
@@ -1805,7 +2216,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("simple-timeline/app")["default"].create({"name":"simple-timeline","version":"0.0.0+4f3c4cd8"});
+  require("simple-timeline/app")["default"].create({"name":"simple-timeline","version":"0.0.0+f77dd6a9"});
 }
 
 /* jshint ignore:end */

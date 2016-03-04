@@ -4,7 +4,7 @@ define('simple-timeline/tests/adapters/application.jshint', ['exports'], functio
   QUnit.module('JSHint - adapters/application.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'adapters/application.js should pass jshint.\nadapters/application.js: line 1, col 8, \'Ember\' is defined but never used.\n\n1 error');
+    assert.ok(true, 'adapters/application.js should pass jshint.');
   });
 });
 define('simple-timeline/tests/app.jshint', ['exports'], function (exports) {
@@ -22,7 +22,16 @@ define('simple-timeline/tests/components/focus-timeline.jshint', ['exports'], fu
   QUnit.module('JSHint - components/focus-timeline.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'components/focus-timeline.js should pass jshint.\ncomponents/focus-timeline.js: line 14, col 6, Missing semicolon.\n\n1 error');
+    assert.ok(true, 'components/focus-timeline.js should pass jshint.');
+  });
+});
+define('simple-timeline/tests/components/new-task-editor.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - components/new-task-editor.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'components/new-task-editor.js should pass jshint.');
   });
 });
 define('simple-timeline/tests/components/range-slider.jshint', ['exports'], function (exports) {
@@ -31,7 +40,7 @@ define('simple-timeline/tests/components/range-slider.jshint', ['exports'], func
   QUnit.module('JSHint - components/range-slider.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'components/range-slider.js should pass jshint.\ncomponents/range-slider.js: line 1, col 8, \'Ember\' is defined but never used.\n\n1 error');
+    assert.ok(true, 'components/range-slider.js should pass jshint.');
   });
 });
 define('simple-timeline/tests/components/task-editor.jshint', ['exports'], function (exports) {
@@ -58,7 +67,7 @@ define('simple-timeline/tests/components/time-line.jshint', ['exports'], functio
   QUnit.module('JSHint - components/time-line.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'components/time-line.js should pass jshint.\ncomponents/time-line.js: line 59, col 56, Missing semicolon.\n\n1 error');
+    assert.ok(true, 'components/time-line.js should pass jshint.');
   });
 });
 define('simple-timeline/tests/components/timeline-task.jshint', ['exports'], function (exports) {
@@ -330,6 +339,155 @@ define('simple-timeline/tests/integration/components/focus-timeline-test.jshint'
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'integration/components/focus-timeline-test.js should pass jshint.');
+  });
+});
+define('simple-timeline/tests/integration/components/new-task-editor-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleForComponent)('new-task-editor', 'Integration | Component | new task editor', {
+    integration: true
+  });
+
+  (0, _emberQunit.test)('it renders', function (assert) {
+    // Set any properties with this.set('myProperty', 'value');
+    // Handle any actions with this.on('myAction', function(val) { ... });"
+
+    this.render(Ember.HTMLBars.template((function () {
+      return {
+        meta: {
+          'fragmentReason': {
+            'name': 'missing-wrapper',
+            'problems': ['wrong-type']
+          },
+          'revision': 'Ember@2.3.1',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 1,
+              'column': 19
+            }
+          }
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['content', 'new-task-editor', ['loc', [null, [1, 0], [1, 19]]]]],
+        locals: [],
+        templates: []
+      };
+    })()));
+
+    assert.equal(this.$().text().trim(), '');
+
+    // Template block usage:"
+    this.render(Ember.HTMLBars.template((function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            'fragmentReason': false,
+            'revision': 'Ember@2.3.1',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 2,
+                'column': 4
+              },
+              'end': {
+                'line': 4,
+                'column': 4
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('      template block text\n');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes() {
+            return [];
+          },
+          statements: [],
+          locals: [],
+          templates: []
+        };
+      })();
+
+      return {
+        meta: {
+          'fragmentReason': {
+            'name': 'missing-wrapper',
+            'problems': ['wrong-type']
+          },
+          'revision': 'Ember@2.3.1',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 5,
+              'column': 2
+            }
+          }
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode('\n');
+          dom.appendChild(el0, el1);
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode('  ');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+          return morphs;
+        },
+        statements: [['block', 'new-task-editor', [], [], 0, null, ['loc', [null, [2, 4], [4, 24]]]]],
+        locals: [],
+        templates: [child0]
+      };
+    })()));
+
+    assert.equal(this.$().text().trim(), 'template block text');
+  });
+});
+define('simple-timeline/tests/integration/components/new-task-editor-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - integration/components/new-task-editor-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'integration/components/new-task-editor-test.js should pass jshint.');
   });
 });
 define('simple-timeline/tests/integration/components/range-slider-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
@@ -1110,7 +1268,7 @@ define('simple-timeline/tests/models/task.jshint', ['exports'], function (export
   QUnit.module('JSHint - models/task.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'models/task.js should pass jshint.\nmodels/task.js: line 5, col 22, \'Ember\' is not defined.\n\n1 error');
+    assert.ok(true, 'models/task.js should pass jshint.');
   });
 });
 define('simple-timeline/tests/resolver.jshint', ['exports'], function (exports) {

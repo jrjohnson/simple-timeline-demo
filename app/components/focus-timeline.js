@@ -11,7 +11,7 @@ export default Component.extend({
     return [
       this.get('firstDay'),
       this.get('lastDay'),
-    ]
+    ];
   }),
   range: computed('steps', function(){
     return {

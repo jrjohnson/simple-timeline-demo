@@ -56,7 +56,7 @@ export default Component.extend(ResizeAware, {
     }).map(task => {
       let taskStartDate = moment(task.get('startDate'));
       let leftBy = taskStartDate.diff(startDate, 'days');
-      let showLabel = topTasks.contains(task.get('id'))
+      let showLabel = topTasks.contains(task.get('id'));
       return {task, leftBy, showLabel};
     });
   })

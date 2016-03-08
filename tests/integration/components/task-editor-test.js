@@ -1,24 +1,38 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { openDatepicker } from 'ember-pikaday/helpers/pikaday';
 
 moduleForComponent('task-editor', 'Integration | Component | task editor', {
   integration: true
 });
 
 test('it renders', function(assert) {
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });"
+  this.render(hbs`{{new-task-editor}}`);
+  assert.equal(this.$('tr').length, 1);
+  assert.equal(this.$('td').length, 6);
 
-  this.render(hbs`{{task-editor}}`);
+});
 
-  assert.equal(this.$().text().trim(), '');
+test('dont save until all required fields are completed', function(assert) {
+  this.render(hbs`{{new-task-editor}}`);
+  assert.equal(this.$('button.save').length, 0);
+  this.$('input:eq(0)').val('title');
+  this.$('input:eq(0)').keyup();
+  let interactor1 = openDatepicker(this.$('input:eq(1)'));
+  interactor1.selectDate(new Date(2016, 2, 7));
+  let interactor2 = openDatepicker(this.$('input:eq(2)'));
+  interactor2.selectDate(new Date(2016, 2, 8));
+  assert.equal(this.$('button.save').length, 1);
 
-  // Template block usage:"
-  this.render(hbs`
-    {{#task-editor}}
-      template block text
-    {{/task-editor}}
-  `);
+});
 
-  assert.equal(this.$().text().trim(), 'template block text');
+test('only show band picker when start and end dates are different', function(assert) {
+  this.render(hbs`{{new-task-editor}}`);
+  let interactor1 = openDatepicker(this.$('input:eq(1)'));
+  interactor1.selectDate(new Date(2016, 2, 7));
+  let interactor2 = openDatepicker(this.$('input:eq(2)'));
+  interactor2.selectDate(new Date(2016, 2, 7));
+  assert.equal(this.$('select').length, 0);
+  interactor2.selectDate(new Date(2016, 2, 8));
+  assert.equal(this.$('select').length, 1);
 });
